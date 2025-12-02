@@ -23,7 +23,9 @@ app.get("/", (req,res) => {
     res.send("<h1>Hello from server</h1>")
 });
 
-const PORT = 8000 || process.env.PORT;
+app.use('/api/users', require('./routes/userRoutes'))
+
+const PORT = process.env.PORT || 8000;
 
 //listen server
 app.listen(PORT, () => {
