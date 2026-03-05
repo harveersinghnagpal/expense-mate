@@ -1,20 +1,24 @@
 import { useEffect, useState } from 'react';
 import api from '../services/api';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, PieChart, Pie } from 'recharts';
 
 const Dashboard = () => {
     const [stats, setStats] = useState({ income: 0, expense: 0, savings: 0, savingsPercentage: 0 });
     const [insights, setInsights] = useState([]);
+    const [breakdown, setBreakdown] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [statsRes, insightsRes] = await Promise.all([
+                const [statsRes, insightsRes, breakdownRes] = await Promise.all([
                     api.get('/analytics/overview'),
-                    api.get('/analytics/insights')
+                    api.get('/analytics/insights'),
+                    api.get('/analytics/category-breakdown')
                 ]);
                 setStats(statsRes.data);
                 setInsights(insightsRes.data);
+                setBreakdown(breakdownRes.data);
             } catch (error) {
                 console.error("Failed to fetch data", error);
             } finally {
@@ -26,10 +30,14 @@ const Dashboard = () => {
 
     if (loading) return <div style={{ color: 'var(--text-secondary)' }}>Loading...</div>;
 
+    const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF4D6D', '#9B5CFF'];
+
     return (
         <div>
             <h1 style={{ marginBottom: '24px' }}>Dashboard</h1>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
+
+            {/* Top Cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', marginBottom: '32px' }}>
                 <div className="card" style={{ padding: '24px' }}>
                     <h3 style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>TOTAL INCOME</h3>
                     <p className="font-mono neon-text-blue" style={{ fontSize: '2rem', marginTop: '8px' }}>
@@ -56,11 +64,57 @@ const Dashboard = () => {
                 </div>
             </div>
 
-            <h2 style={{ margin: '40px 0 24px' }}>AI Insights (Rule-Based)</h2>
+            {/* Charts Section */}
+            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px', marginBottom: '32px' }}>
+                <div className="card" style={{ padding: '24px', height: '400px' }}>
+                    <h3 style={{ marginBottom: '24px' }}>Spending Breakdown</h3>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={breakdown}>
+                            <XAxis dataKey="_id" stroke="#52525B" tick={{ fill: '#A0A0A0' }} />
+                            <YAxis stroke="#52525B" tick={{ fill: '#A0A0A0' }} />
+                            <Tooltip
+                                contentStyle={{ backgroundColor: '#16161F', border: '1px solid #333', color: '#fff' }}
+                                cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                            />
+                            <Bar dataKey="total" radius={[4, 4, 0, 0]}>
+                                {breakdown.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.color || COLORS[index % COLORS.length]} />
+                                ))}
+                            </Bar>
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+
+                <div className="card" style={{ padding: '24px', height: '400px' }}>
+                    <h3 style={{ marginBottom: '24px' }}>Distribution</h3>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                            <Pie
+                                data={breakdown}
+                                cx="50%"
+                                cy="50%"
+                                innerRadius={60}
+                                outerRadius={80}
+                                paddingAngle={5}
+                                dataKey="total"
+                                nameKey="_id"
+                            >
+                                {breakdown.map((entry, index) => (
+                                    <Cell key={`cell-${index}`} fill={entry.color || COLORS[index % COLORS.length]} />
+                                ))}
+                            </Pie>
+                            <Tooltip contentStyle={{ backgroundColor: '#16161F', border: '1px solid #333' }} />
+                        </PieChart>
+                    </ResponsiveContainer>
+                </div>
+            </div>
+
+            {/* Insights Section */}
+            <h2 style={{ marginBottom: '24px' }}>AI Insights</h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' }}>
                 {insights.length === 0 ? (
                     <div className="card" style={{ padding: '24px', gridColumn: 'span 2', color: 'var(--text-secondary)' }}>
-                        No insights available yet. Add more transactions.
+                        No insights available yet. Add more transactions to generate intelligence.
                     </div>
                 ) : (
                     insights.map((insight, index) => (
