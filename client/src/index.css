@@ -1,4 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
 
 :root {
   /* Colors */
@@ -64,16 +69,20 @@ button {
 .neon-text-red { color: var(--neon-red); text-shadow: 0 0 10px rgba(255, 77, 109, 0.3); }
 
 .card {
-  background-color: var(--bg-card);
+  background: rgba(22, 22, 31, 0.5);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-radius: var(--radius-md);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.2s ease-in-out;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
 }
 
 .card:hover {
-  border-color: rgba(255, 255, 255, 0.1);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  background: rgba(31, 31, 43, 0.6);
+  border-color: rgba(60, 242, 255, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(60, 242, 255, 0.15);
 }
 
 .btn {

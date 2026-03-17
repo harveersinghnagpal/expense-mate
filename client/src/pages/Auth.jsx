@@ -1,13 +1,24 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import AuthContext from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Auth = () => {
-    const [isLogin, setIsLogin] = useState(true);
+    const location = useLocation();
+    const [isLogin, setIsLogin] = useState(location.pathname !== '/signup');
     const [formData, setFormData] = useState({ name: '', email: '', password: '' });
-    const { login, register } = useContext(AuthContext);
+    const { login, register, user } = useContext(AuthContext);
     const navigate = useNavigate();
     const [error, setError] = useState('');
+
+    useEffect(() => {
+        setIsLogin(location.pathname !== '/signup');
+    }, [location.pathname]);
+
+    useEffect(() => {
+        if (user) {
+            navigate('/dashboard');
+        }
+    }, [user, navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -18,7 +29,7 @@ const Auth = () => {
             } else {
                 await register(formData.name, formData.email, formData.password);
             }
-            navigate('/');
+            navigate('/dashboard');
         } catch (err) {
             setError(err.response?.data?.message || 'Something went wrong');
         }
@@ -80,6 +91,30 @@ const Auth = () => {
 
                     <button type="submit" className="btn btn-primary" style={{ marginTop: '8px' }}>
                         {isLogin ? 'AUTHENTICATE' : 'INITIALIZE'}
+                    </button>
+                    <button 
+                        type="button"
+                        onClick={() => window.location.href = `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/auth/google`}
+                        className="btn"
+                        style={{ 
+                            marginTop: '16px',
+                            width: '100%', 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'center', 
+                            gap: '10px',
+                            background: 'rgba(255, 255, 255, 0.05)',
+                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                            color: 'white'
+                        }}
+                    >
+                        <svg width="18" height="18" viewBox="0 0 18 18">
+                            <path fill="#4285F4" d="M17.64 9.2c0-.63-.06-1.25-.16-1.84H9v3.49h4.84a4.14 4.14 0 0 1-1.8 2.71v2.26h2.91c1.7-1.56 2.69-3.86 2.69-6.62z"/>
+                            <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.91-2.26c-.8.54-1.83.86-3.05.86-2.34 0-4.33-1.58-5.04-3.71H.95v2.33C2.43 15.98 5.48 18 9 18z"/>
+                            <path fill="#FBBC05" d="M3.96 10.71a5.41 5.41 0 0 1 0-3.42V4.96H.95a8.99 8.99 0 0 0 0 8.08l3.01-2.3z"/>
+                            <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35L15.02 2.3A8.96 8.96 0 0 0 9 0C5.48 0 2.43 2.02.95 4.96L3.96 7.29C4.67 5.16 6.66 3.58 9 3.58z"/>
+                        </svg>
+                        Google Authentication
                     </button>
                 </form>
 

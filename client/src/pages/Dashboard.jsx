@@ -65,15 +65,31 @@ const Dashboard = () => {
             </div>
 
             {/* Charts Section */}
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px', marginBottom: '32px' }}>
-                <div className="card" style={{ padding: '24px', height: '400px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', marginBottom: '32px' }}>
+                <div className="card" style={{ padding: '24px', height: '350px' }}>
+                    <h3 style={{ marginBottom: '24px' }}>Overview</h3>
+                    <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={[{ name: 'Summary', Income: stats.income, Expense: stats.expense }]}>
+                            <XAxis dataKey="name" stroke="#52525B" tick={{ fill: '#A0A0A0' }} />
+                            <YAxis stroke="#52525B" tick={{ fill: '#A0A0A0' }} />
+                            <Tooltip
+                                contentStyle={{ backgroundColor: 'rgba(22, 22, 31, 0.8)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', color: '#fff' }}
+                                cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+                            />
+                            <Bar dataKey="Income" fill="var(--neon-green)" radius={[4, 4, 0, 0]} barSize={40} />
+                            <Bar dataKey="Expense" fill="var(--neon-red)" radius={[4, 4, 0, 0]} barSize={40} />
+                        </BarChart>
+                    </ResponsiveContainer>
+                </div>
+
+                <div className="card" style={{ padding: '24px', height: '350px' }}>
                     <h3 style={{ marginBottom: '24px' }}>Spending Breakdown</h3>
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={breakdown}>
                             <XAxis dataKey="_id" stroke="#52525B" tick={{ fill: '#A0A0A0' }} />
                             <YAxis stroke="#52525B" tick={{ fill: '#A0A0A0' }} />
                             <Tooltip
-                                contentStyle={{ backgroundColor: '#16161F', border: '1px solid #333', color: '#fff' }}
+                                contentStyle={{ backgroundColor: 'rgba(22, 22, 31, 0.8)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', color: '#fff' }}
                                 cursor={{ fill: 'rgba(255,255,255,0.05)' }}
                             />
                             <Bar dataKey="total" radius={[4, 4, 0, 0]}>
@@ -85,7 +101,7 @@ const Dashboard = () => {
                     </ResponsiveContainer>
                 </div>
 
-                <div className="card" style={{ padding: '24px', height: '400px' }}>
+                <div className="card" style={{ padding: '24px', height: '350px' }}>
                     <h3 style={{ marginBottom: '24px' }}>Distribution</h3>
                     <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
@@ -103,7 +119,7 @@ const Dashboard = () => {
                                     <Cell key={`cell-${index}`} fill={entry.color || COLORS[index % COLORS.length]} />
                                 ))}
                             </Pie>
-                            <Tooltip contentStyle={{ backgroundColor: '#16161F', border: '1px solid #333' }} />
+                            <Tooltip contentStyle={{ backgroundColor: 'rgba(22, 22, 31, 0.8)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', color: '#fff' }} />
                         </PieChart>
                     </ResponsiveContainer>
                 </div>

@@ -38,13 +38,24 @@ export const AuthProvider = ({ children }) => {
         return data;
     };
 
+    const loginWithToken = async (token) => {
+        localStorage.setItem('token', token);
+        try {
+            const { data } = await api.get('/auth/me');
+            setUser(data);
+        } catch (error) {
+            console.error("Token login failed", error);
+            localStorage.removeItem('token');
+        }
+    };
+
     const logout = () => {
         localStorage.removeItem('token');
         setUser(null);
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+        <AuthContext.Provider value={{ user, login, register, logout, loginWithToken, loading }}>
             {children}
         </AuthContext.Provider>
     );

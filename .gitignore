@@ -1,6 +1,33 @@
-node_modules
+# Node / packages
+node_modules/
+**/node_modules/
+
+# Environment variables / secrets
 .env
-dist
+.env.*
+!.env.example
+
+# Build output
+dist/
+build/
+coverage/
+out/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS / Editor
 .DS_Store
-coverage
-.vscode
+Thumbs.db
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

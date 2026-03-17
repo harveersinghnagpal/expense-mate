@@ -84,4 +84,5 @@ module.exports = {
   registerUser,
   loginUser,
   getMe,
+  generateToken,
 };
